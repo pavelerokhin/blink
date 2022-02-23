@@ -1,0 +1,63 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Verdana";
+}
+
+a {
+  background-color: black;
+  color: white;
+  padding: 4px;
+  text-decoration: none;
+}
+
+h1,
+h2 {
+  margin: 15px;
+}
+
+h2 {
+}
+
+p {
+  margin-bottom: 10px;
+  text-indent: 10px;
+  font-size: 24px;
+}
+
+#blink_galery1 {
+  height: 300px;
+  width: 300px;
+}
+
+#blink_galery2 {
+  height: 300px;
+  width: 300px;
+}
+
+#blink_galery3 {
+  height: 300px;
+  width: 100%;
+}
+
+#blink_gallery_fixed {
+  border: 1px solid black;
+  display: fixed;
+  right: 0;
+  top: 0;
+
+  height: 400px;
+  width: 400px;
+}
+
+#wrapper {
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+  width: 800px;
+}
+
+.pargraph_with_blink {
+  display: flex;
+}
