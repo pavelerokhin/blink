@@ -1,4 +1,6 @@
-class Blink {
+"use strict";
+
+export default class Blink {
   /* pass to the constructor the following parameters:
      REQUESTED PARAMETERS:
         containerId - id (!) of a div element in DOM that will contain the gallery. String, requested
@@ -20,7 +22,7 @@ class Blink {
   }) {
     if (containerId.length == 0) {
       console.info(
-        "no Blink gallery's container hs been set, no gallery will be initialized"
+        "no Blink gallery's container has been set, no gallery will be initialized"
       );
       return;
     }
@@ -81,11 +83,10 @@ class Blink {
         this.showImageOnMousemove(e)
       );
 
-      debugger;
       if (href) {
         that.galleryContainer.setAttribute(
           "onclick",
-          `location.href='www.${href}'`
+          `location.href='${href}'`
         );
       }
     };
@@ -110,7 +111,8 @@ class Blink {
       overflow:hidden; 
       position: relative; 
       height: 100%;
-      width:100%;`;
+      width:100%;
+      `;
     this.galleryContainer.appendChild(this.imgsContainer);
   }
 
@@ -132,7 +134,8 @@ class Blink {
     img.style.cssText = `
       left: ${x}px;
       position: absolute; 
-      top: ${y}px;`;
+      top: ${y}px;
+      `;
   }
 
   setGalleryContainerStyle() {
@@ -141,7 +144,8 @@ class Blink {
       display: flex; 
       flex-direction: column;
       overflow: hidden;
-      userSelect: none;`;
+      userSelect: none;
+      `;
   }
 
   setImgProperties(img, url) {

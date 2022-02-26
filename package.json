@@ -1,0 +1,28 @@
+{
+  "name": "blink",
+  "version": "1.0.0",
+  "description": "om-mouse-move photo gallery with on-click link ridirection (and some other fancy features)",
+  "main": "/src/blink.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavelerokhin/blink.git"
+  },
+  "keywords": [
+    "photogallery",
+    "gallery",
+    "js",
+    "javascript",
+    "gallery",
+    "mousemove",
+    "href"
+  ],
+  "author": "Pavel Erokhin (Unita)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pavelerokhin/blink/issues"
+  },
+  "homepage": "https://github.com/pavelerokhin/blink#readme"
+}
