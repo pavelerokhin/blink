@@ -7,7 +7,7 @@ export default class Blink {
         imgUrls - array of URLs to the images to publish in the gallery. Array of strings, requested
      OPTIONAL PARAMETERS:
         caption - a single row of text, placed under the gallery. String
-        cursorUrl - url to the custom cursor image, which will appear on hover of the gallery. String
+        style.cursorUrl - url to the custom cursor image, which will appear on hover of the gallery. String
         imgCentered - if true, the images will be centered. Boolean, default: false
         href - a link ref, opens on click on the gallery. String
     */
@@ -15,11 +15,15 @@ export default class Blink {
     containerId = "",
     imgUrls = [],
     caption = "",
-    cursorUrl = "",
-    imgCenteredX = false,
-    imgCenteredY = false,
     href = "",
+    style = {
+      cursorUrl: "",
+      imgCentered: false,
+      height: "",
+      width: "",
+    },
   }) {
+    debugger;
     if (containerId.length == 0) {
       console.info(
         "no Blink gallery's container has been set, no gallery will be initialized"
@@ -49,6 +53,8 @@ export default class Blink {
         `no Blink gallery's container with ID "${containerId}" has been found in DOM`
       );
     }
+
+    this.style = style;
     this.setGalleryContainerStyle();
 
     let rectangle = this.galleryContainer.getBoundingClientRect();
@@ -56,8 +62,8 @@ export default class Blink {
     this.galleryContainerCY = rectangle.top + rectangle.height * 0.5;
 
     // set the coursor
-    if (cursorUrl) {
-      that.galleryContainer.style.cursor = `url("${cursorUrl}"), auto`;
+    if (this.style.cursorUrl) {
+      that.galleryContainer.style.cursor = `url("${this.style.cursorUrl}"), auto`;
     }
 
     this.appendImagesContainer();
@@ -73,23 +79,14 @@ export default class Blink {
     this.urls.forEach((url, i) => {
       let img = document.createElement("img");
       that.setImgProperties(img, url);
-      that.setImgStyle(img, i, imgCenteredX, imgCenteredY);
+      that.setImgStyle(img, i);
       that.imgsContainer.appendChild(img);
       that.imgs.push(img);
     });
 
-    window.onload = () => {
-      that.galleryContainer.addEventListener("mousemove", (e) =>
-        this.showImageOnMousemove(e)
-      );
-
-      if (href) {
-        that.galleryContainer.setAttribute(
-          "onclick",
-          `location.href='${href}'`
-        );
-      }
-    };
+    if (href) {
+      that.galleryContainer.setAttribute("onclick", `location.href='${href}'`);
+    }
   }
 
   appendCaption(caption) {
@@ -146,6 +143,19 @@ export default class Blink {
       overflow: hidden;
       userSelect: none;
       `;
+
+    debugger;
+    if (this.style.height) {
+      this.galleryContainer.style.height = this.style.height + "px";
+    } else {
+      this.galleryContainer.style.height = "auto";
+    }
+
+    if (this.style.width) {
+      this.galleryContainer.style.width = this.style.width + "px";
+    } else {
+      this.galleryContainer.style.width = "auto";
+    }
   }
 
   setImgProperties(img, url) {
@@ -154,7 +164,7 @@ export default class Blink {
     img.setAttribute("draggable", "false");
   }
 
-  setImgStyle(img, i, imgCentered) {
+  setImgStyle(img, i) {
     // at the init, only the firs photo is visible
     let display = i == 0 ? "block" : "none";
     img.style.cssText = `
@@ -168,7 +178,7 @@ export default class Blink {
     `;
 
     // center image if needed
-    if (imgCentered) {
+    if (this.style.imgCentered) {
       this.centerImage(img);
     }
   }
@@ -179,5 +189,11 @@ export default class Blink {
       let display = i == visible ? "block" : "none";
       img.style.display = display;
     });
+  }
+
+  init() {
+    this.galleryContainer.addEventListener("mousemove", (e) =>
+      this.showImageOnMousemove(e)
+    );
   }
 }

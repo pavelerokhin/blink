@@ -1,10 +1,10 @@
 {
-  "name": "blink",
+  "name": "blinkgallery",
   "version": "1.0.0",
   "description": "om-mouse-move photo gallery with on-click link ridirection (and some other fancy features)",
   "main": "/src/blink.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test yet have been specified. Work in progress\" && exit 1"
   },
   "repository": {
     "type": "git",
