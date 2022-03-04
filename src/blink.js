@@ -1,6 +1,7 @@
 "use strict";
 
-export default class Blink {
+// export default class Blink {
+class Blink {
   /* pass to the constructor the following parameters:
      REQUESTED PARAMETERS:
         containerId - id (!) of a div element in DOM that will contain the gallery. String, requested
@@ -8,13 +9,17 @@ export default class Blink {
      OPTIONAL PARAMETERS:
         caption - a single row of text, placed under the gallery. String
         style.cursorUrl - url to the custom cursor image, which will appear on hover of the gallery. String
-        imgCentered - if true, the images will be centered. Boolean, default: false
+        style.imgCentered - if true, the images will be centered. Boolean, default: false
+        style.height - height 
+        style.width
         href - a link ref, opens on click on the gallery. String
     */
   constructor({
-    containerId = "",
-    imgUrls = [],
+    containerId,
+    imgUrls,
     caption = "",
+    changeEvent = "mousemove",
+    timer = 1000,
     href = "",
     style = {
       cursorUrl: "",
@@ -23,7 +28,7 @@ export default class Blink {
       width: "",
     },
   }) {
-    debugger;
+    // tests
     if (containerId.length == 0) {
       console.info(
         "no Blink gallery's container has been set, no gallery will be initialized"
@@ -37,11 +42,31 @@ export default class Blink {
       return;
     }
 
+    const alloudEvents = ["mousemove", "click", "timer"];
+    if (alloudEvents.indexOf(changeEvent) == -1) {
+      console.info(
+        `requested cvhange event '${changeEvent}' is not supported by Blink gallery`
+      );
+      return;
+    }
+
+    // fields
+    this.changeEvent = changeEvent;
+    this.galleryContainer = null;
+    this.galleryContainerCX = 0;
+    this.galleryContainerCY = 0;
+    this.imgs = [];
+    this.minHeightGalleryContainer = Infinity;
+    this.minWidthGalleryContainer = Infinity;
+    this.style = style;
+    this.timer = timer;
+    this.urls = imgUrls;
+    this.visibleImageIndex = 0;
+
     // pointer to the instance of the gallery
     let that = this;
-    // get gallery container
-    this.galleryContainer = null;
 
+    // get gallery container from the DOM
     try {
       this.galleryContainer = document.querySelector("#" + containerId);
       if (!this.galleryContainer) {
@@ -54,13 +79,16 @@ export default class Blink {
       );
     }
 
-    this.style = style;
+    // gallery styling
     this.setGalleryContainerStyle();
-
     let rectangle = this.galleryContainer.getBoundingClientRect();
     this.galleryContainerCX = rectangle.left + rectangle.width * 0.5;
     this.galleryContainerCY = rectangle.top + rectangle.height * 0.5;
 
+    // append link if needed
+    if (href) {
+      that.galleryContainer.setAttribute("onclick", `location.href='${href}'`);
+    }
     // set the coursor
     if (this.style.cursorUrl) {
       that.galleryContainer.style.cursor = `url("${this.style.cursorUrl}"), auto`;
@@ -72,21 +100,16 @@ export default class Blink {
       this.appendCaption(caption);
     }
 
-    // internalize parameter and future photos to the object
-    this.urls = imgUrls;
-    this.imgs = [];
-
     this.urls.forEach((url, i) => {
       let img = document.createElement("img");
       that.setImgProperties(img, url);
       that.setImgStyle(img, i);
+      that.getMinMearuresOfGallery(img);
       that.imgsContainer.appendChild(img);
       that.imgs.push(img);
     });
 
-    if (href) {
-      that.galleryContainer.setAttribute("onclick", `location.href='${href}'`);
-    }
+    this.setGalleryHeightAndWidth();
   }
 
   appendCaption(caption) {
@@ -113,7 +136,13 @@ export default class Blink {
     this.galleryContainer.appendChild(this.imgsContainer);
   }
 
-  calculateVisiblePic(mouseMoveEvent) {
+  calculateVisiblePicClick(mouseMoveEvent) {
+    return mouseMoveEvent.clientX / this.galleryContainer.offsetWidth > 0.5
+      ? 1
+      : -1;
+  }
+
+  calculateVisiblePicMousemove(mouseMoveEvent) {
     let rect = mouseMoveEvent.target.getBoundingClientRect();
     return Math.abs(
       Math.floor(
@@ -128,11 +157,20 @@ export default class Blink {
     let rectangle = img.getBoundingClientRect();
     let x = this.galleryContainerCX - rectangle.width * 0.5;
     let y = this.galleryContainerCY - rectangle.height * 0.5;
-    img.style.cssText = `
+    this.img.style.cssText = `
       left: ${x}px;
       position: absolute; 
       top: ${y}px;
       `;
+  }
+
+  getMinMearuresOfGallery(img) {
+    if (img.naturalHeight < this.minHeightGalleryContainer) {
+      this.minHeightGalleryContainer = img.naturalHeight;
+    }
+    if (img.naturalWidth < this.minWidthGalleryContainer) {
+      this.minWidthGalleryContainer = img.naturalWidth;
+    }
   }
 
   setGalleryContainerStyle() {
@@ -142,19 +180,21 @@ export default class Blink {
       flex-direction: column;
       overflow: hidden;
       userSelect: none;
-      `;
+    `;
+  }
 
-    debugger;
+  setGalleryHeightAndWidth() {
     if (this.style.height) {
-      this.galleryContainer.style.height = this.style.height + "px";
+      this.galleryContainer.style.height = this.style.height;
     } else {
-      this.galleryContainer.style.height = "auto";
+      this.galleryContainer.style.height =
+        this.minHeightGalleryContainer + "px";
     }
 
     if (this.style.width) {
-      this.galleryContainer.style.width = this.style.width + "px";
+      this.galleryContainer.style.width = this.style.width;
     } else {
-      this.galleryContainer.style.width = "auto";
+      this.galleryContainer.style.width = this.minWidthGalleryContainer + "px";
     }
   }
 
@@ -166,10 +206,9 @@ export default class Blink {
 
   setImgStyle(img, i) {
     // at the init, only the firs photo is visible
-    let display = i == 0 ? "block" : "none";
     img.style.cssText = `
       background-color: transparent;
-      display: ${display};
+      display: block;
       height: auto;
       pointer-events: none;
       position: absolute;
@@ -181,19 +220,54 @@ export default class Blink {
     if (this.style.imgCentered) {
       this.centerImage(img);
     }
+    if (i != 0) {
+      img.style.display = "none";
+    }
   }
 
-  showImageOnMousemove(event) {
-    const visible = this.calculateVisiblePic(event);
+  showVisibleImage() {
+    if (this.visibleImageIndex >= this.imgs.length) {
+      this.visibleImageIndex = 0;
+    } else if (this.visibleImageIndex < 0) {
+      this.visibleImageIndex = this.imgs.length - 1;
+    }
+
     this.imgs.forEach((img, i) => {
-      let display = i == visible ? "block" : "none";
+      let display = i == this.visibleImageIndex ? "block" : "none";
       img.style.display = display;
     });
   }
 
+  showNextImageClick(event) {
+    const shift = this.calculateVisiblePicClick(event);
+    this.visibleImageIndex += shift;
+
+    this.showVisibleImage();
+  }
+
+  showNextImageMousemove(event) {
+    this.visibleImageIndex = this.calculateVisiblePicMousemove(event);
+    this.showVisibleImage();
+  }
+
+  showNextImageTimer() {
+    this.visibleImageIndex++;
+    this.showVisibleImage();
+  }
+
   init() {
-    this.galleryContainer.addEventListener("mousemove", (e) =>
-      this.showImageOnMousemove(e)
-    );
+    if (this.changeEvent == "mousemove") {
+      this.galleryContainer.addEventListener(this.changeEvent, (e) =>
+        this.showNextImageMousemove(e)
+      );
+    }
+    if (this.changeEvent == "click") {
+      this.galleryContainer.addEventListener(this.changeEvent, (e) =>
+        this.showNextImageClick(e)
+      );
+    }
+    if (this.changeEvent == "timer") {
+      setInterval(this.showNextImageTimer.bind(this), this.timer);
+    }
   }
 }
