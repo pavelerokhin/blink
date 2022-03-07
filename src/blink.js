@@ -8,12 +8,14 @@ class Blink {
         imgUrls - array of URLs to the images to publish in the gallery. Array of strings, requested
      OPTIONAL PARAMETERS:
         caption - a single row of text, placed under the gallery. String
+        changeEvent - event for change pictures ("mousemove", "click", "timer"). String, default: mousemove
+        timer - if change event is timer, set the time interval im milliseconds. Number, default: 1000
         style.cursorUrl - url to the custom cursor image, which will appear on hover of the gallery. String
         style.imgCentered - if true, the images will be centered. Boolean, default: false
-        style.height - height 
-        style.width
+        style.height - height in px or percent. String
+        style.width - width in px or percent. String
         href - a link ref, opens on click on the gallery. String
-    */
+  */
   constructor({
     containerId,
     imgUrls,
