@@ -1,6 +1,7 @@
 # BlinkGallery
 
 ![give a star to the project](./etc/header.png)
+
 A lightweight JS gallery.
 Current version: 1.0.0
 
