@@ -18,4 +18,22 @@ Current version: 1.0.0
 
 ## Installation
 
+## Parameters
+
+You can pass to the Blink Gallery's class constructor the following parameters:
+
+- requested parameters:
+  -- `containerId` - id (!) of a div element in DOM that will contain the gallery. String, requested
+  -- `imgUrls` - array of URLs to the images to publish in the gallery. Array of strings, requested
+- optional parameters:
+  -- `caption` - a single row of text, placed under the gallery. String
+  -- `changeEvent` - event for change pictures ("mousemove", "click", "timer"). String, default: mousemove
+  -- `timer` - if change event is timer, set the time interval im milliseconds. Number, default: 1000
+  -- style - an object that defines the styling of the gallery, has the following fields:
+  --- `cursorUrl` - url to the custom cursor image, which will appear on hover of the gallery. String
+  --- `imgCentered` - if true, the images will be centered. Boolean, default: false
+  --- `height` - height in px or percent. String
+  --- `width` - width in px or percent. String
+  -- `href` - a link ref, opens on click on the gallery. String
+
 ## Usage
