@@ -18,6 +18,8 @@ Current version: 1.0.0
 
 ## Installation
 
+Copy `Blink.js` file to your project and import it with a `<script>` tag.
+
 ## Parameters
 
 You can pass to the Blink Gallery's class constructor the following parameters:
@@ -39,3 +41,23 @@ You can pass to the Blink Gallery's class constructor the following parameters:
 ## Usage
 
 See the `example.html` file
+
+E.g.:
+
+```
+<body>
+  ...
+  <div id="blink"></div>
+  ...
+
+  <script src="Blink.js"></script>
+  <script>
+      const blinkGallery1_1 = new Blink({
+        containerId: "blink",
+        imgUrls: ["url/to/1.jpg","url/to/2.jpg"],
+        caption: "standard Blink gallery with picture change on mousemove",
+      });
+      blink.init();
+  </script>
+</body>
+```
