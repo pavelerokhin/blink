@@ -52,6 +52,28 @@ class Blink {
       return;
     }
 
+    if (
+      style.height.slice(style.height.length - 1) != "%" &&
+      style.height.length > 2 &&
+      style.height.slice(style.height.length - 2) != "px"
+    ) {
+      console.info(
+        "height (style parameter) should be a number with px or % suffix"
+      );
+      return;
+    }
+
+    if (
+      style.height.slice(style.height.length - 1) != "%" &&
+      style.height.length > 2 &&
+      style.height.slice(style.height.length - 2) != "px"
+    ) {
+      console.info(
+        "width (style parameter) should be a number with px or % suffix"
+      );
+      return;
+    }
+
     // fields
     this.changeEvent = changeEvent;
     this.galleryContainer = null;
@@ -104,6 +126,7 @@ class Blink {
 
     this.urls.forEach((url, i) => {
       let img = document.createElement("img");
+      img.style.position = "absolute";
       that.setImgProperties(img, url);
       that.setImgStyle(img, i);
       that.getMinMearuresOfGallery(img);
@@ -129,11 +152,8 @@ class Blink {
     this.imgsContainer = document.createElement("div");
     this.imgsContainer.classList.add("images_container");
     this.imgsContainer.style.cssText = `
-      display: block; 
-      overflow:hidden; 
-      position: relative; 
-      height: 100%;
-      width:100%;
+      overflow: hidden;
+      position: relative;
       `;
     this.galleryContainer.appendChild(this.imgsContainer);
   }
@@ -186,18 +206,60 @@ class Blink {
   }
 
   setGalleryHeightAndWidth() {
-    if (this.style.height) {
-      this.galleryContainer.style.height = this.style.height;
-    } else {
-      this.galleryContainer.style.height =
-        this.minHeightGalleryContainer + "px";
+    function getSize(measure) {
+      return measure.slice(0, measure.length - getSuffix(measure).length);
     }
 
-    if (this.style.width) {
-      this.galleryContainer.style.width = this.style.width;
-    } else {
-      this.galleryContainer.style.width = this.minWidthGalleryContainer + "px";
+    function getSuffix(measure) {
+      if (measure.slice(measure.length - 1) == "%") {
+        return "%";
+      }
+      return "px";
     }
+
+    function setHeightWidthImgAndGalleryContainers(mh, mw) {
+      that.galleryContainer.style.minHeight = mh;
+      that.imgsContainer.style.minHeight = mh;
+      that.galleryContainer.style.width = mw;
+      that.imgsContainer.style.width = mw;
+    }
+
+    var that = this;
+
+    if (!this.style.height && !this.style.width) {
+      let mh = `${this.minHeightGalleryContainer}px`;
+      let mw = `${this.minWidthGalleryContainer}px`;
+      setHeightWidthImgAndGalleryContainers(mh, mw);
+
+      return;
+    }
+
+    let ratio = this.minHeightGalleryContainer / this.minWidthGalleryContainer;
+
+    let [heightCalculated, heightSuffix] = this.style.height
+      ? [getSize(this.style.height), getSuffix(this.style.height)]
+      : [
+          Math.floor(getSize(this.style.width) * ratio),
+          getSuffix(this.style.width),
+        ];
+
+    let mh = heightCalculated + heightSuffix;
+
+    let [widthCalculated, widthSuffix] = this.style.width
+      ? [getSize(this.style.width), getSuffix(this.style.width)]
+      : [
+          Math.floor(getSize(this.style.height) / ratio),
+          getSuffix(this.style.height),
+        ];
+
+    let mw = widthCalculated + widthSuffix;
+    setHeightWidthImgAndGalleryContainers(mh, mw);
+
+    // adjust imgage height
+    this.imgs.forEach((i) => {
+      i.setAttribute("height", heightCalculated);
+      i.setAttribute("width", widthCalculated);
+    });
   }
 
   setImgProperties(img, url) {
