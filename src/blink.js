@@ -23,6 +23,7 @@ class Blink {
     changeEvent = "mousemove",
     timer = 1000,
     href = "",
+    order = "normal",
     style = {
       cursorUrl: "",
       imgCentered: false,
@@ -47,7 +48,15 @@ class Blink {
     const alloudEvents = ["mousemove", "click", "timer"];
     if (alloudEvents.indexOf(changeEvent) == -1) {
       console.info(
-        `requested cvhange event '${changeEvent}' is not supported by Blink gallery`
+        `requested change event '${changeEvent}' is not supported by Blink gallery`
+      );
+      return;
+    }
+
+    const alloudOrders = ["normal", "reverse", "random"];
+    if (alloudOrders.indexOf(order) == -1) {
+      console.info(
+        `requested order type '${order}' is not supported by Blink gallery`
       );
       return;
     }
@@ -82,6 +91,7 @@ class Blink {
     this.imgs = [];
     this.minHeightGalleryContainer = Infinity;
     this.minWidthGalleryContainer = Infinity;
+    this.order = order;
     this.style = style;
     this.timer = timer;
     this.urls = imgUrls;
@@ -122,6 +132,17 @@ class Blink {
 
     if (caption) {
       this.appendCaption(caption);
+    }
+
+    if (this.order != "normal") {
+      switch (this.order) {
+        case "reverse":
+          this.urls = this.urls.reversed();
+          break;
+        case "random":
+          this.urls = urls.sort((a, b) => 0.5 - Math.random());
+          break;
+      }
     }
 
     this.urls.forEach((url, i) => {
