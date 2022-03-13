@@ -129,12 +129,10 @@ class Blink {
       img.style.position = "absolute";
       that.setImgProperties(img, url);
       that.setImgStyle(img, i);
-      that.getMinMearuresOfGallery(img);
+      // that.getMinMearuresOfGallery(img);
       that.imgsContainer.appendChild(img);
       that.imgs.push(img);
     });
-
-    this.setGalleryHeightAndWidth();
   }
 
   appendCaption(caption) {
@@ -195,6 +193,22 @@ class Blink {
     }
   }
 
+  async preloadImages() {
+    for (let img of this.imgs) {
+      const image = new Image();
+      const preload = (src) =>
+        new Promise((r) => {
+          image.onload = r;
+          image.onerror = r;
+          image.src = src;
+        });
+
+      // Preload an image
+      await preload(img.src);
+      this.getMinMearuresOfGallery(image);
+    }
+  }
+
   setGalleryContainerStyle() {
     this.galleryContainer.innerHTML = "";
     this.galleryContainer.style.cssText = `
@@ -218,7 +232,7 @@ class Blink {
     }
 
     function setHeightWidthImgAndGalleryContainers(mh, mw) {
-      that.galleryContainer.style.minHeight = mh;
+      that.galleryContainer.style.height = mh;
       that.imgsContainer.style.minHeight = mh;
       that.galleryContainer.style.width = mw;
       that.imgsContainer.style.maxWidth = mw;
@@ -263,7 +277,6 @@ class Blink {
   }
 
   setImgProperties(img, url) {
-    img.classList.add("img");
     img.setAttribute("src", `${url}`);
     img.setAttribute("draggable", "false");
   }
@@ -319,7 +332,10 @@ class Blink {
     this.showVisibleImage();
   }
 
-  init() {
+  async init() {
+    await this.preloadImages();
+    this.setGalleryHeightAndWidth();
+
     if (this.changeEvent == "mousemove") {
       this.galleryContainer.addEventListener(this.changeEvent, (e) =>
         this.showNextImageMousemove(e)
