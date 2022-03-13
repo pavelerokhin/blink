@@ -46,9 +46,7 @@ E.g.:
 
 ```
 <body>
-  ...
   <div id="blink"></div>
-  ...
 
   <script src="Blink.js"></script>
   <script>
