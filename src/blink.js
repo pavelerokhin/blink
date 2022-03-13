@@ -221,7 +221,7 @@ class Blink {
       that.galleryContainer.style.minHeight = mh;
       that.imgsContainer.style.minHeight = mh;
       that.galleryContainer.style.width = mw;
-      that.imgsContainer.style.width = mw;
+      that.imgsContainer.style.maxWidth = mw;
     }
 
     var that = this;
