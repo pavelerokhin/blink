@@ -30,25 +30,31 @@ class Blink {
       width: "",
     },
   }) {
+    containerId = containerId.trim();
+    this.errorState = false;
+
     // tests
     if (containerId.length == 0) {
-      console.info(
+      console.error(
         "no Blink gallery's container has been set, no gallery will be initialized"
       );
+      this.errorState = true;
       return;
     }
     if (imgUrls.length == 0) {
-      console.info(
+      console.error(
         `no Blink gallery's photos urls have been set, no gallery (with ID '${containerId}') will be initialized`
       );
+      this.errorState = true;
       return;
     }
 
     const alloudEvents = ["mousemove", "click", "timer"];
     if (alloudEvents.indexOf(changeEvent) == -1) {
-      console.info(
+      console.error(
         `requested cvhange event '${changeEvent}' is not supported by Blink gallery`
       );
+      this.errorState = true;
       return;
     }
 
@@ -57,9 +63,10 @@ class Blink {
       style.height.length > 2 &&
       style.height.slice(style.height.length - 2) != "px"
     ) {
-      console.info(
+      console.error(
         "height (style parameter) should be a number with px or % suffix"
       );
+      this.errorState = true;
       return;
     }
 
@@ -68,9 +75,10 @@ class Blink {
       style.height.length > 2 &&
       style.height.slice(style.height.length - 2) != "px"
     ) {
-      console.info(
+      console.error(
         "width (style parameter) should be a number with px or % suffix"
       );
+      this.errorState = true;
       return;
     }
 
@@ -94,10 +102,12 @@ class Blink {
     try {
       this.galleryContainer = document.querySelector("#" + containerId);
       if (!this.galleryContainer) {
+        this.errorState = true;
         throw new Error("no container in DOM");
       }
     } catch (e) {
       console.error(e);
+      this.errorState = true;
       throw new Error(
         `no Blink gallery's container with ID "${containerId}" has been found in DOM`
       );
@@ -333,6 +343,13 @@ class Blink {
   }
 
   async init() {
+    if (this.errorState) {
+      console.error(
+        "Due to the errors, it's impossible to initialize Picrandomizer"
+      );
+      return;
+    }
+
     await this.preloadImages();
     this.setGalleryHeightAndWidth();
 
