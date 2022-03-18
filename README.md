@@ -55,7 +55,7 @@ E.g.:
         imgUrls: ["url/to/1.jpg","url/to/2.jpg"],
         caption: "standard Blink gallery with picture change on mousemove",
       });
-      blink.init();
+      blink.show();
   </script>
 </body>
 ```
