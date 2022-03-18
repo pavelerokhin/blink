@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * Author: Pavel Erokhin, Unionecreativa <unionecreativa@gmail.com>
+ * GIT: https://github.com/pavelerokhin/blink
+ */
+
 // export default class Blink {
 class Blink {
   /* pass to the constructor the following parameters:
