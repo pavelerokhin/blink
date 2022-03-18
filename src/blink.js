@@ -297,7 +297,7 @@ class Blink {
   }
 
   setImgStyle(img, i) {
-    // at the init, only the firs photo is visible
+    // at the show, only the firs photo is visible
     img.style.cssText = `
       background-color: transparent;
       display: block;
@@ -347,7 +347,7 @@ class Blink {
     this.showVisibleImage();
   }
 
-  async init() {
+  async show() {
     if (this.errorState) {
       console.error(
         "Due to the errors, it's impossible to initialize Picrandomizer"
