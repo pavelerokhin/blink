@@ -128,12 +128,14 @@ class Blink {
     if (href) {
       that.galleryContainer.setAttribute("onclick", `location.href='${href}'`);
     }
+
+    this.appendImagesContainer();
+
     // set the coursor
     if (this.style.cursorUrl) {
       that.galleryContainer.style.cursor = `url("${this.style.cursorUrl}"), auto`;
+      that.imgsContainer.style.cursor = `url("${this.style.cursorUrl}"), auto`;
     }
-
-    this.appendImagesContainer();
 
     if (caption) {
       this.appendCaption(caption);
